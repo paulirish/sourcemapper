@@ -136,8 +136,11 @@
             app.get(json.file, app.showTargetFile);
 
             app.dom.source.value = '';
-            app.files = [];
+            app.files = json.sourcesContent || [];
             json.sources.forEach(function(source, i){
+              // Provided by sourcesContent, don't need to fetch it.
+              if (app.files[i]) return;
+
               app.get(source, function(str){
                 // files can arrive in any order, but we dont really care about that.
                 // last one stays on screen until user clicks on a segment in the source.
