@@ -12,7 +12,7 @@
       .segment.other { background-color: #959622; }
       .resulting { float:left; width: 35%; border-right: 1px solid #ADADAD; padding-right: 14px;}
       .original-source { float:left; width: 35%; padding-left: 11px; }
-      .resulting #out { width: 95%; height: 300px; overflow: auto; } 
+      .resulting #out { width: 95%; height: 300px; overflow: auto; }
       .app {padding-top: 40px;border: rgba(176, 209, 228, 0.25) solid 1px;overflow: hidden;margin: 40px -12px 0px -12px;padding: 13px 13px 0px 15px;background: rgba(183, 214, 231, 0.05);border-radius: 2px;}
     </style>
     <link href="bootstrap.css" rel="stylesheet">
@@ -43,6 +43,7 @@
       <br/>
       <textarea id="map" style="width: 95%; height: 300px;">
       </textarea>
+      <textarea id="generated" style="width: 95%; height: 300px;"></textarea>
     </div>
     <div class="resulting">
       <div style="">Resulting source<b id="targetname"></b>:</div>
@@ -62,6 +63,7 @@
           source: document.getElementById('inp'),
           target: document.getElementById('out'),
           map: document.getElementById('map'),
+          generated: document.getElementById('generated'),
           select: document.getElementById('sourceselect'),
           sourcename: document.getElementById('sourcename'),
           targetname: document.getElementById('targetname'),
@@ -154,6 +156,10 @@
 
             app.sourceMeta = [];
           };
+
+          app.dom.generated.onkeyup = function(e){
+            app.showTargetFile(e.target.value);
+          }
         },
         /**
          * Registers a delegate to listen for clicks on "segments".
