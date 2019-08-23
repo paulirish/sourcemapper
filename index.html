@@ -41,8 +41,10 @@
       <br/>
 
       <br/>
+      <h4>map json</h4>
       <textarea id="map" style="width: 95%; height: 300px;">
       </textarea>
+      <h4>generated js</h4>
       <textarea id="generated" style="width: 95%; height: 300px;"></textarea>
     </div>
     <div class="resulting">
@@ -135,21 +137,30 @@
             app.sourcemap = json.mappings;
 
             app.dom.targetname.innerHTML = ' ('+json.file+')';
-            app.get(json.file, app.showTargetFile);
+
+            if (!json.sourcesContent) {
+              app.get(json.file, app.showTargetFile).catch(console.error);
+            }
+
 
             app.dom.source.value = '';
             app.files = json.sourcesContent || [];
-            json.sources.forEach(function(source, i){
+            json.sources.forEach(async function(source, i){
               // Provided by sourcesContent, don't need to fetch it.
-              if (app.files[i]) return;
+              let str;
+              if (app.files[i]) {
+                setOriginalSource(app.files[i]);
+              } else {
+                app.get(source, setOriginalSource);
+              }
 
-              app.get(source, function(str){
+              function setOriginalSource(str){
                 // files can arrive in any order, but we dont really care about that.
                 // last one stays on screen until user clicks on a segment in the source.
                 app.files[i] = str;
                 app.dom.sourcename.innerHTML = ' ('+source+')';
                 app.dom.source.innerHTML = str.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'\n\n';
-              });
+              }
             });
 
             app.cacheMap();
@@ -347,23 +358,14 @@
         },
 
         /**
-         * Very simple ajax GET (and still too much cruft ;). Not thoroughly tested.
+         * Very simple fetch
          *
          * @param {string} url
          * @param {Function} callback
          */
         get: function(url, callback){
-          var xhr = new XMLHttpRequest();
-          xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4 || xhr.readyState=='complete') {
-              if (xhr.status == 200) {
-                callback(xhr.responseText);
-              }
-            }
-          };
-          xhr.open('GET', url, true);
-          xhr.send(null);
-        },
+          return fetch(url).then(resp => resp.text()).then(callback);
+        }
       };
 
       app.run();
