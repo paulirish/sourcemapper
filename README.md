@@ -1,3 +1,9 @@
+EDIT; this is a fork. i tweaked some things and made it accept custom stuff. it sorta works. sometimes.
+https://paulirish.github.io/sourcemapper/
+
+-------------------
+
+
 Source mapper
 
 This tool visualizes a source map, allowing you to debug your source map generator.
